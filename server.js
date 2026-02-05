@@ -79,7 +79,7 @@ app.post("/api/rtp", async (req, res) => {
 
     const text = await upstream.text();
 
-    // ✅ FIX: forward upstream content-type so frontend parses JSON correctly
+    // FIX: forward upstream content-type so frontend parses JSON correctly
     const ct = upstream.headers.get("content-type");
     if (ct) res.setHeader("content-type", ct);
 
@@ -123,7 +123,7 @@ app.post("/api/qr", async (req, res) => {
 
     const text = await upstream.text();
 
-    // ✅ FIX: forward upstream content-type so frontend parses JSON correctly
+    // FIX: forward upstream content-type so frontend parses JSON correctly
     const ct = upstream.headers.get("content-type");
     if (ct) res.setHeader("content-type", ct);
 
