@@ -176,15 +176,6 @@ Each successful row renders a QR inside the results table.
 
 ## Screenshots
 
-Add screenshots under:
-
-```
-docs/screenshots/
-```
-
-Reference them in this file:
-
-```md
 ### RTP
 ![RTP](docs/screenshots/rtp.png)
 
@@ -193,12 +184,7 @@ Reference them in this file:
 
 ### Bulk Attempts
 ![Bulk](docs/screenshots/bulk.png)
-```
 
-Recommended screenshots:
-- RTP with response visible on left pane
-- QR with rendered QR preview
-- Bulk with multiple rows and QR rendered in-table
 
 ---
 
