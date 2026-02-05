@@ -6,8 +6,6 @@ export async function callRtp(payload) {
   });
 }
 
-
-
 export async function callQr(payload) {
   return fetch("/api/qr", {
     method: "POST",
