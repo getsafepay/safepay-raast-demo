@@ -1,0 +1,3 @@
+aggregator_merchant_identifier,amount,type,debitor_type,debitor_value,order_id
+am_7c9594a6-962d-49c7-94e9-64d9cf285969,2000,RTP_NOW,IBAN,PK58ALFH0357001007131552,RTP-test-1
+am_7c9594a6-962d-49c7-94e9-64d9cf285969,2000,RTP_LATER,IBAN,PK58ALFH0357001007131552,RTP-test-2

@@ -1,0 +1,339 @@
+:root {
+  --sp-blue-1: #06279e;
+  --sp-blue-2: #001444;
+  --sp-blue-3: #00184a;
+  --sp-border: #e6e9f2;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #fff;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ---------- LEFT PANE (Brand) ---------- */
+.leftPane {
+  background: linear-gradient(160deg, var(--sp-blue-1), var(--sp-blue-2), var(--sp-blue-3));
+  color: #ffffff;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brandWrap {
+  max-width: 600px;
+  flex: 1;
+  overflow: auto;
+  padding-bottom: 10px;
+}
+
+.brandWrap h1 {
+  font-size: 34px;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+.brandWrap p {
+  font-size: 15px;
+  opacity: 0.9;
+  margin: 0 0 24px;
+}
+
+/* Left pane footer */
+.footerNote {
+  margin-top: auto;
+  padding: 0px 12px;
+  text-align: right;
+  font-size: 12px;
+  color: #ffffffcc;
+}
+
+.footerNote img {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* Right footer (if you use it) */
+.footerNoteRight {
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ---------- QR hero (left) ---------- */
+#qrWrap {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.qrTitle {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+#qrCanvas {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 340px;
+  margin-bottom: 15px;
+}
+
+#qrCanvas canvas,
+#qrCanvas img {
+  width: 300px !important;
+  height: 300px !important;
+}
+
+/* ---------- RIGHT PANE (Controls) ---------- */
+.rightPane {
+  background: #ffffff;
+  padding: 32px;
+  margin-top: 80px;
+  overflow-y: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* Top tabs */
+.topTabs {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 12px 0;
+}
+
+/* Cards */
+.card {
+  background: #ffffff;
+  border: 1px solid var(--sp-border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.card h2 {
+  font-size: 14px;
+  margin: 0 0 10px;
+  color: #111827;
+}
+
+/* Inputs */
+label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin: 10px 0 6px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+textarea {
+  min-height: 125px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.row > * {
+  flex: 1;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
+}
+.small {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ---------- Buttons ---------- */
+.btnbar {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  width: 30%;
+}
+
+button.primary {
+  background: var(--sp-blue-2);
+  color: #fff;
+}
+button.secondary {
+  background: #eef2ff;
+  color: var(--sp-blue-2);
+}
+button.danger {
+  background: #fee2e2;
+  color: #692323;
+}
+
+/* Toggle buttons */
+button.toggle {
+  background: #f1f5f9;
+  color: #334155;
+}
+button.toggle.active {
+  background: var(--sp-blue-2);
+  color: #ffffff;
+}
+
+/* Status pill */
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: #e5e7eb;
+  margin-top: 4px;
+}
+.pill.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+.pill.bad {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ---------- Table ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th {
+  text-align: left;
+  font-size: 11px;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 4px;
+  vertical-align: top;
+}
+
+td {
+  font-size: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  padding: 8px 4px;
+  vertical-align: top;
+}
+
+/* Bulk results table should fit left pane */
+.tableWrapLeft {
+  min-height: 62vh;
+  overflow: auto;
+}
+
+/* ---------- QR cells (table) ---------- */
+.qrCell {
+  display: inline-block;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.qrCell canvas,
+.qrCell img {
+  width: 180px !important;
+  height: 180px !important;
+  display: block;
+}
+
+/* ---------- Animations (shared) ---------- */
+.panel {
+  transition: max-height 260ms ease, opacity 260ms ease, transform 260ms ease, margin 260ms ease;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 4000px;
+}
+
+.leftPanel {
+  transition: max-height 240ms ease, opacity 240ms ease, transform 240ms ease, margin 240ms ease;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 2500px;
+  margin-top: 12px;
+}
+
+/* RTP-only blocks animate */
+.rtpOnly {
+  transition: max-height 220ms ease, opacity 220ms ease, transform 220ms ease, margin 220ms ease;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 800px;
+}
+
+/* One unified hidden state */
+.isHidden {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  transform: translateY(-8px) !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+/* Mobile */
+@media (max-width: 1000px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+  .leftPane {
+    padding: 32px;
+  }
+  #qrCanvas canvas,
+  #qrCanvas img {
+    width: 260px !important;
+    height: 260px !important;
+  }
+}
+
+tbody#resultsBody {
+    color: #333333;
+}
