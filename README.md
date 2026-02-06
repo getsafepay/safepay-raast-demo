@@ -37,7 +37,7 @@ Edit `.env` and set your credentials:
 
 ```bash
 RAAST_AGGREGATOR_ID=agg_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-RAAST_SECRET_KEY=sec_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+RAAST_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 PORT=3003
 ```
 
