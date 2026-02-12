@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import net from "net";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,8 +23,14 @@ if (!fs.existsSync(PUBLIC_DIR)) {
 // Serve frontend (so /css/* and /js/* work)
 app.use(express.static(PUBLIC_DIR));
 
-// Simple health + debug
-app.get("/health", (_, res) => res.json({ ok: true }));
+// -----------------------------
+// Health + Debug
+// -----------------------------
+
+app.get("/health", (_, res) => {
+  res.json({ ok: true });
+});
+
 app.get("/debug/public", (_, res) => {
   res.json({
     publicDir: PUBLIC_DIR,
@@ -36,7 +43,10 @@ app.get("/raast", (_, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "raast.html"));
 });
 
+// -----------------------------
 // RTP endpoint
+// -----------------------------
+
 app.post("/api/rtp", async (req, res) => {
   try {
     const {
@@ -49,8 +59,11 @@ app.post("/api/rtp", async (req, res) => {
       debitor_value,
     } = req.body;
 
-    if (!aggregator_merchant_identifier)
-      return res.status(400).json({ error: "Missing aggregator_merchant_identifier" });
+    if (!aggregator_merchant_identifier) {
+      return res
+        .status(400)
+        .json({ error: "Missing aggregator_merchant_identifier" });
+    }
 
     const payload = {
       aggregator_merchant_identifier,
@@ -60,13 +73,20 @@ app.post("/api/rtp", async (req, res) => {
       type,
     };
 
-    // map debitor field correctly
-    if (debitor_type === "IBAN") payload.debitor_iban = debitor_value;
-    if (debitor_type === "RAAST_ID") payload.debitor_raast_id = debitor_value;
-    if (debitor_type === "VAULT_TOKEN") payload.debitor_vault_token = debitor_value;
+    // Map debitor field correctly
+    if (debitor_type === "IBAN") {
+      payload.debitor_iban = debitor_value;
+    }
+
+    if (debitor_type === "RAAST_ID") {
+      payload.debitor_raast_id = debitor_value;
+    }
+
+    if (debitor_type === "VAULT_TOKEN") {
+      payload.debitor_vault_token = debitor_value;
+    }
 
     const url = `https://api.getsafepay.com/raastwire/v1/aggregators/${process.env.RAAST_AGGREGATOR_ID}/payments`;
-
 
     const upstream = await fetch(url, {
       method: "POST",
@@ -79,17 +99,25 @@ app.post("/api/rtp", async (req, res) => {
 
     const text = await upstream.text();
 
-    // FIX: forward upstream content-type so frontend parses JSON correctly
+    // Forward upstream content-type
     const ct = upstream.headers.get("content-type");
-    if (ct) res.setHeader("content-type", ct);
+    if (ct) {
+      res.setHeader("content-type", ct);
+    }
 
     res.status(upstream.status).send(text);
   } catch (e) {
-    res.status(500).json({ error: "RTP failed", detail: String(e) });
+    res.status(500).json({
+      error: "RTP failed",
+      detail: String(e),
+    });
   }
 });
 
+// -----------------------------
 // QR endpoint
+// -----------------------------
+
 app.post("/api/qr", async (req, res) => {
   try {
     const {
@@ -100,43 +128,103 @@ app.post("/api/qr", async (req, res) => {
       qr_type = "DYNAMIC",
     } = req.body;
 
-    if (!aggregator_merchant_identifier)
-      return res.status(400).json({ error: "Missing aggregator_merchant_identifier" });
+    if (!aggregator_merchant_identifier) {
+      return res
+        .status(400)
+        .json({ error: "Missing aggregator_merchant_identifier" });
+    }
 
-    const url = `https://api.getsafepay.com/raastwire/v1/aggregators/${process.env.RAAST_AGGREGATOR_ID}/qrs`;
- 
+    const qt = String(qr_type).toUpperCase();
 
-    const upstream = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-SFPY-AGGREGATOR-SECRET-KEY": process.env.RAAST_SECRET_KEY,
-      },
-      body: JSON.stringify({
-        type: qr_type,
-        aggregator_merchant_identifier,
-        order_id,
-        request_id,
-        amount,
-      }),
-    });
+    // DYNAMIC requires amount
+    if (qt !== "STATIC") {
+      if (
+        amount === undefined ||
+        amount === null ||
+        Number(amount) <= 0
+      ) {
+        return res
+          .status(400)
+          .json({ error: "Missing/invalid amount for DYNAMIC QR" });
+      }
+    }
+
+    const body = {
+      type: qt,
+      aggregator_merchant_identifier,
+      order_id,
+      request_id,
+    };
+
+    // Only include amount for DYNAMIC
+    if (qt === "DYNAMIC") {
+      body.amount = amount;
+    }
+
+    const upstream = await fetch(
+      `https://api.getsafepay.com/raastwire/v1/aggregators/${process.env.RAAST_AGGREGATOR_ID}/qrs`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-SFPY-AGGREGATOR-SECRET-KEY": process.env.RAAST_SECRET_KEY,
+        },
+        body: JSON.stringify(body),
+      }
+    );
 
     const text = await upstream.text();
 
-    // FIX: forward upstream content-type so frontend parses JSON correctly
+    // ✅ FIX: Forward upstream content-type so frontend parses JSON
     const ct = upstream.headers.get("content-type");
-    if (ct) res.setHeader("content-type", ct);
+    if (ct) {
+      res.setHeader("content-type", ct);
+    }
 
     res.status(upstream.status).send(text);
   } catch (e) {
-    res.status(500).json({ error: "QR failed", detail: String(e) });
+    res.status(500).json({
+      error: "QR failed",
+      detail: String(e),
+    });
   }
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`\n✅ Server running on http://localhost:${PORT}`);
-  console.log(`✅ RAAST Demo → http://localhost:${PORT}/raast`);
-  console.log(`✅ Health     → http://localhost:${PORT}/health`);
-  console.log(`✅ Debug      → http://localhost:${PORT}/debug/public\n`);
+// -----------------------------
+// Auto free-port finder
+// -----------------------------
+
+function findFreePort(startPort, cb) {
+  const server = net.createServer();
+
+  server.once("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      findFreePort(startPort + 1, cb);
+    } else {
+      cb(err);
+    }
+  });
+
+  server.once("listening", () => {
+    const port = server.address().port;
+    server.close(() => cb(null, port));
+  });
+
+  server.listen(startPort);
+}
+
+const START_PORT = Number(process.env.PORT) || 3000;
+
+findFreePort(START_PORT, (err, port) => {
+  if (err) {
+    console.error("Failed to find free port:", err);
+    process.exit(1);
+  }
+
+  app.listen(port, () => {
+    console.log(`\n✅ Server running on http://localhost:${port}`);
+    console.log(`✅ RAAST Demo → http://localhost:${port}/raast`);
+    console.log(`✅ Health → http://localhost:${port}/health`);
+    console.log(`✅ Debug → http://localhost:${port}/debug/public\n`);
+  });
 });
