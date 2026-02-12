@@ -68,7 +68,6 @@
         </div>
       </div>
 
-      <!-- Left pane footer -->
       <div class="footerNote">
         Powered by <img src="/css/Safepay-White-Logo.png" width="100" alt="Safepay" />
       </div>
@@ -90,7 +89,8 @@
           <input id="merchantId" placeholder="am_..." />
 
           <div class="row">
-            <div>
+            <!-- Amount (hidden only when QR + STATIC) -->
+            <div id="amountWrap">
               <label>amount</label>
               <input id="amount" type="number" min="1" step="1" placeholder="e.g. 10000" />
             </div>
@@ -101,6 +101,15 @@
               <select id="rtpType">
                 <option value="RTP_NOW">RTP NOW</option>
                 <option value="RTP_LATER">RTP LATER</option>
+              </select>
+            </div>
+
+            <!-- QR type (QR-only, shown via JS) -->
+            <div id="qrTypeWrap" class="isHidden">
+              <label>QR Type</label>
+              <select id="qrType">
+                <option value="DYNAMIC" selected>DYNAMIC</option>
+                <option value="STATIC">STATIC</option>
               </select>
             </div>
           </div>
@@ -140,7 +149,7 @@
         </section>
       </div>
 
-      <!-- BULK CONTROLS (upload + run only; table is on the LEFT) -->
+      <!-- BULK CONTROLS (upload/run only) -->
       <div id="bulkSection" class="panel isHidden" aria-hidden="true">
         <section class="card">
           <div class="cardHeader">
@@ -169,6 +178,9 @@
         </section>
       </div>
 
+      <div class="footerNoteRight">
+        RAAST Demo UI • local-only • backend holds secrets
+      </div>
     </main>
   </div>
 
