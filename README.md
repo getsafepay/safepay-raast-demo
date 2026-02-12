@@ -38,7 +38,7 @@ Edit `.env` and set your credentials:
 ```bash
 RAAST_AGGREGATOR_ID=agg_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 RAAST_SECRET_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-PORT=3003
+PORT=3000
 ```
 
 ### 3) Run the server
