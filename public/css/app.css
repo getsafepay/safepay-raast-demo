@@ -27,7 +27,7 @@ body {
 }
 
 .brandWrap {
-  max-width: 600px;
+  max-width: 750px;
   flex: 1;
   overflow: auto;
   padding-bottom: 10px;
@@ -176,7 +176,7 @@ textarea {
 }
 .small {
   font-size: 12px;
-  color: #6b7280;
+  color: #ffffff;
 }
 
 /* ---------- Buttons ---------- */
@@ -248,7 +248,7 @@ table {
 th {
   text-align: left;
   font-size: 11px;
-  color: #6b7280;
+  color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   padding: 8px 4px;
   vertical-align: top;
@@ -317,7 +317,9 @@ td {
   transform: translateY(-8px) !important;
   margin: 0 !important;
   pointer-events: none;
+  display: none;
 }
+
 
 /* Mobile */
 @media (max-width: 1000px) {
@@ -336,4 +338,11 @@ td {
 
 tbody#resultsBody {
     color: #333333;
+    background: #ffffff;
+}
+
+/* Makes QR column more comfortable */
+#resultsTable th:last-child,
+#resultsTable td:last-child {
+  min-width: 120px;
 }

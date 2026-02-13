@@ -1,56 +1,106 @@
 // public/js/qr.js
-// Depends on qrcodejs being loaded globally as window.QRCode
+// Uses qrcodejs loaded globally via script tag (QRCode)
 
-function cleanPayload(payload) {
-  return String(payload || "").replace(/\r?\n/g, "").trim();
-}
-
-/**
- * Render the large "hero" QR on the left pane.
- */
-export function renderQr(targetEl, payload, size = 300) {
-  const text = cleanPayload(payload);
+export function renderQr(targetEl, text, size = 300) {
+  if (!targetEl) return;
   targetEl.innerHTML = "";
-
   if (!text) return;
 
-  // QRCode comes from the qrcodejs CDN script in raast.html
   // eslint-disable-next-line no-undef
   new QRCode(targetEl, {
     text,
     width: size,
     height: size,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.M
+    correctLevel: QRCode.CorrectLevel.M,
   });
 }
 
-/**
- * Render a smaller QR in the table cells for bulk QR.
- */
-export function renderQrInto(targetEl, payload, size = 220) {
-  const text = cleanPayload(payload);
-  targetEl.innerHTML = "";
+export function renderQrInto(targetEl, text, size = 160) {
+  return renderQr(targetEl, text, size);
+}
 
+export function renderQrWithDownload(
+  targetCellEl,
+  text,
+  previewSize = 90,
+  downloadSize = 300,
+  filename = "qr.png"
+) {
+  if (!targetCellEl) return;
+
+  targetCellEl.innerHTML = "";
   if (!text) {
-    targetEl.textContent = "—";
+    targetCellEl.textContent = "—";
     return;
   }
 
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.flexDirection = "column";
+  wrap.style.alignItems = "center";
+  wrap.style.gap = "6px";
+
+  const preview = document.createElement("div");
+  preview.style.cursor = "pointer";
+
+  const dl = document.createElement("a");
+  dl.textContent = "Download";
+  dl.href = "#";
+  dl.style.fontSize = "12px";
+  dl.style.textDecoration = "underline";
+  dl.style.cursor = "pointer";
+
+  wrap.appendChild(preview);
+  wrap.appendChild(dl);
+  targetCellEl.appendChild(wrap);
+
   // eslint-disable-next-line no-undef
-  new QRCode(targetEl, {
+  new QRCode(preview, {
     text,
-    width: size,
-    height: size,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.M
+    width: previewSize,
+    height: previewSize,
+    correctLevel: QRCode.CorrectLevel.M,
   });
 
-  // scanner friendly quiet zone
-  targetEl.style.background = "#fff";
-  targetEl.style.padding = "10px";
-  targetEl.style.borderRadius = "10px";
-  targetEl.style.display = "inline-block";
+  const tmp = document.createElement("div");
+  tmp.style.position = "fixed";
+  tmp.style.left = "-99999px";
+  tmp.style.top = "-99999px";
+  document.body.appendChild(tmp);
+
+  // eslint-disable-next-line no-undef
+  new QRCode(tmp, {
+    text,
+    width: downloadSize,
+    height: downloadSize,
+    correctLevel: QRCode.CorrectLevel.M,
+  });
+
+  const canvas = tmp.querySelector("canvas");
+  const img = tmp.querySelector("img");
+
+  let dataUrl = null;
+  if (canvas) dataUrl = canvas.toDataURL("image/png");
+  else if (img && img.src) dataUrl = img.src;
+
+  document.body.removeChild(tmp);
+
+  if (!dataUrl) {
+    dl.textContent = "Download unavailable";
+    dl.style.textDecoration = "none";
+    dl.style.cursor = "default";
+    preview.style.cursor = "default";
+    return;
+  }
+
+  dl.href = dataUrl;
+  dl.download = filename;
+
+  const triggerDownload = (e) => {
+    e?.preventDefault?.();
+    dl.click();
+  };
+
+  preview.addEventListener("click", triggerDownload);
+  dl.addEventListener("click", (e) => e.stopPropagation());
 }

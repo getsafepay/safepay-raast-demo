@@ -1,101 +1,97 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Safepay RAAST Demo</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safepay RAAST Demo</title>
 
-  <link rel="stylesheet" href="./css/app.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-</head>
-<body>
-  <div class="app">
+    <link rel="stylesheet" href="/css/app.css" />
 
-    <!-- LEFT -->
-    <aside class="leftPane">
-      <div class="brandWrap">
-        <h1>Safepay RAAST RTPs &amp; QR Demo</h1>
+    <!-- QR lib (existing dependency) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  </head>
 
-        <!-- LEFT: QR Preview (only in QR mode) -->
-        <div id="qrWrap" class="leftPanel qrWrap isHidden">
-          <div class="qrTitle">QR Preview</div>
-          <div id="qrCanvas" class="qrCanvas"></div>
-          <textarea id="qrPayload" class="qrPayload" readonly placeholder="QR payload will appear here…"></textarea>
-        </div>
+  <body>
+    <div class="app">
+      <!-- LEFT PANE -->
+      <div class="leftPane">
+        <div class="brandWrap">
+          <h1>Safepay RAAST RTPs & QR Demo</h1>
+          <p>Local demo UI to test RTPs, QRs, and Payouts.</p>
 
-        <!-- LEFT: RTP Response (only in RTP mode) -->
-        <div id="rtpRespWrap" class="leftPanel isHidden">
-          <section class="card">
-            <div class="row" style="align-items:flex-start;">
-              <div style="flex:0 0 auto;">
-                <label>Status</label>
+          <!-- QR hero (only visible in QR tab) -->
+          <div id="qrWrap" class="leftPanel">
+            <div class="qrTitle">QR Preview</div>
+            <div id="qrCanvas"></div>
+
+            <label class="small">QR Payload</label>
+            <textarea id="qrPayload" class="mono" readonly></textarea>
+          </div>
+
+          <!-- RTP / PAYOUT response JSON (visible in RTP & PAYOUT) -->
+          <div id="rtpRespWrap" class="leftPanel">
+            <div class="row" style="align-items: center; gap: 12px">
+              <div>
+                <div class="small">Status</div>
                 <div id="statusPill" class="pill">—</div>
               </div>
-              <div style="flex:1;">
-                <label>Response</label>
-                <textarea id="responseBox" class="mono" readonly placeholder="Response will appear here…"></textarea>
-              </div>
             </div>
-          </section>
+
+            <label>Response</label>
+            <textarea id="responseBox" class="mono" readonly></textarea>
+          </div>
+
+          <!-- Bulk results table (visible in BULK) -->
+          <div id="bulkRespWrap" class="leftPanel tableWrapLeft isHidden" aria-hidden="true">
+            <h2>Batch Results</h2>
+            <table id="resultsTable" style="display: none">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Mode/Type</th>
+                  <th>Merchant</th>
+                  <th>Amount</th>
+                  <th>Debitor / Creditor</th>
+                  <th>HTTP</th>
+                  <th>Result</th>
+                  <th>QR</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+
+            <div id="csvStatus" class="small"></div>
+          </div>
         </div>
 
-        <!-- LEFT: BULK Results (only in BULK mode) -->
-        <div id="bulkRespWrap" class="leftPanel isHidden" aria-hidden="true">
-          <section class="card">
-            <div class="cardHeader">
-              <h2>Batch Results</h2>
-              <div id="csvStatus" class="small"></div>
-            </div>
-
-            <div class="tableWrap tableWrapLeft">
-              <table id="resultsTable" style="display:none;">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Mode/Type</th>
-                    <th>Merchant</th>
-                    <th>Amount</th>
-                    <th>Debitor</th>
-                    <th>HTTP</th>
-                    <th>Result</th>
-                    <th>QR</th>
-                  </tr>
-                </thead>
-                <tbody id="resultsBody"></tbody>
-              </table>
-            </div>
-          </section>
+        <div class="footerNote">
+          Powered by <img src="/css/Safepay-White-Logo.png" alt="Safepay" height="18" />
         </div>
       </div>
 
-      <div class="footerNote">
-        Powered by <img src="/css/Safepay-White-Logo.png" width="100" alt="Safepay" />
-      </div>
-    </aside>
+      <!-- RIGHT PANE -->
+      <div class="rightPane">
+        <div class="topTabs">
+          <button id="modeRtp" class="toggle">RTP</button>
+          <button id="modeQr" class="toggle">QR</button>
+          <button id="modePayout" class="toggle">Payout</button>
+          <button id="modeBulk" class="toggle">Bulk Attempts</button>
+        </div>
 
-    <!-- RIGHT -->
-    <main class="rightPane">
-      <!-- TOP TABS -->
-      <div class="topTabs">
-        <button id="modeRtp" class="toggle active" type="button">RTP</button>
-        <button id="modeQr" class="toggle" type="button">QR</button>
-        <button id="modeBulk" class="toggle" type="button">Bulk Attempts</button>
-      </div>
+        <!-- SINGLE (RTP / QR / PAYOUT) -->
+        <div id="singleSection" class="panel">
+          <div class="card">
+            <div id="merchantWrap">
+              <label>aggregator_merchant_identifier</label>
+              <input id="merchantId" placeholder="am_xxx" />
+            </div>
 
-      <!-- SINGLE (RTP/QR) CONTROLS -->
-      <div id="singleSection" class="panel">
-        <section class="card">
-          <label>aggregator_merchant_identifier</label>
-          <input id="merchantId" placeholder="am_..." />
-
-          <div class="row">
-            <!-- Amount (hidden only when QR + STATIC) -->
             <div id="amountWrap">
               <label>amount</label>
-              <input id="amount" type="number" min="1" step="1" placeholder="e.g. 10000" />
+              <input id="amount" placeholder="2000" />
             </div>
 
-            <!-- RTP type (RTP-only) -->
+            <!-- RTP-only -->
             <div id="rtpTypeWrap" class="rtpOnly">
               <label>RTP Type</label>
               <select id="rtpType">
@@ -104,19 +100,17 @@
               </select>
             </div>
 
-            <!-- QR type (QR-only, shown via JS) -->
-            <div id="qrTypeWrap" class="isHidden">
+            <!-- QR-only -->
+            <div id="qrTypeWrap" class="rtpOnly isHidden">
               <label>QR Type</label>
               <select id="qrType">
-                <option value="DYNAMIC" selected>DYNAMIC</option>
+                <option value="DYNAMIC">DYNAMIC</option>
                 <option value="STATIC">STATIC</option>
               </select>
             </div>
-          </div>
 
-          <!-- Debitor (RTP-only) -->
-          <div class="row rtpOnly" id="debitorRow">
-            <div>
+            <!-- RTP-only -->
+            <div class="rtpOnly">
               <label>Debitor Type</label>
               <select id="debitorType">
                 <option value="IBAN">IBAN</option>
@@ -124,66 +118,63 @@
                 <option value="VAULT_TOKEN">Vault Token</option>
               </select>
             </div>
-            <div>
+
+            <div class="rtpOnly">
               <label id="debitorLabel">Debitor (IBAN)</label>
               <input id="debitorValue" placeholder="PK.." />
             </div>
-          </div>
 
-          <div class="row">
-            <div>
-              <label>order_id</label>
-              <input id="orderId" placeholder="Bulk-test1" />
+            <!-- PAYOUT-only -->
+            <div id="creditorWrap" class="payoutOnly isHidden">
+              <label>creditor_iban</label>
+              <input id="creditorIban" placeholder="PK39HABB0007867916713101" />
             </div>
+
+            <!-- order_id (RTP/QR only) -->
+            <div id="orderWrap">
+              <label>order_id</label>
+              <input id="orderId" placeholder="order-001" />
+            </div>
+
             <div>
               <label>request_id (UUID)</label>
               <input id="requestId" class="mono" />
             </div>
-          </div>
 
-          <div class="btnbar">
-            <button id="sendBtn" class="primary" type="button">Send</button>
-            <button id="regenBtn" class="secondary" type="button">New UUID</button>
-            <button id="clearBtn" class="danger" type="button">Clear</button>
-          </div>
-        </section>
-      </div>
-
-      <!-- BULK CONTROLS (upload/run only) -->
-      <div id="bulkSection" class="panel isHidden" aria-hidden="true">
-        <section class="card">
-          <div class="cardHeader">
-            <h2>CSV / TSV Batch</h2>
-            <div class="small">Paste/export from Excel → TSV works best (tab-separated).</div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>Upload (.tsv or .csv)</label>
-              <input id="csvFile" type="file" accept=".tsv,.csv,text/tab-separated-values,text/csv" />
-              <div class="small" style="margin-top:6px;">
-                RTP file format:
-                <span class="mono">merchant, amount, RTP_NOW/RTP_LATER, debitor_type, debitor_value, order_id, request_id(optional)</span>
-                <br/>
-                QR file format:
-                <span class="mono">merchant, amount, QR, order_id, request_id(optional)</span>
-              </div>
+            <div class="btnbar">
+              <button id="sendBtn" class="primary">Send</button>
+              <button id="regenBtn" class="secondary">New UUID</button>
+              <button id="clearBtn" class="danger">Clear</button>
             </div>
           </div>
+        </div>
 
-          <div class="btnbar">
-            <button id="csvRun" class="primary" type="button">Run Batch</button>
-            <button id="csvClear" class="danger" type="button">Clear Results</button>
+        <!-- BULK -->
+        <div id="bulkSection" class="panel isHidden" aria-hidden="true">
+          <div class="card">
+            <h2>CSV / TSV Batch</h2>
+            <p class="small">Paste/export from Excel → TSV works best (tab-separated).</p>
+
+            <label>Upload (.tsv or .csv)</label>
+            <input id="csvFile" type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values" />
+
+            <div class="small" style="margin-top: 10px">
+              <div><b>RTP file format:</b> merchant, amount, RTP_NOW/RTP_LATER, debitor_type, debitor_value, order_id, request_id(optional)</div>
+              <div><b>QR file format:</b> merchant, amount, QR, order_id, request_id(optional)</div>
+              <div><b>PAYOUT file format:</b> amount, creditor_iban</div>
+            </div>
+
+            <div class="btnbar">
+              <button id="csvRun" class="primary">Run Batch</button>
+              <button id="csvClear" class="danger">Clear Results</button>
+            </div>
+
+            <div class="footerNoteRight">RAAST Demo UI • local-only • backend holds secrets</div>
           </div>
-        </section>
+        </div>
       </div>
+    </div>
 
-      <div class="footerNoteRight">
-        RAAST Demo UI • local-only • backend holds secrets
-      </div>
-    </main>
-  </div>
-
-  <script type="module" src="./js/app.js"></script>
-</body>
+    <script type="module" src="/js/app.js"></script>
+  </body>
 </html>

@@ -1,3 +1,3 @@
 aggregator_merchant_identifier,amount,type,order_id
-am_7c9594a6-962d-49c7-94e9-64d9cf285969,2000,QR,QR-test1
-am_7c9594a6-962d-49c7-94e9-64d9cf285969,2000,QR,QR-test2
+am_7c9594a6-962d-49c7-94e9-64d9cf285969,2000,DYNAMIC,Dynamic-QR
+am_7c9594a6-962d-49c7-94e9-64d9cf285969,2000,STATIC,STATIC-QR
