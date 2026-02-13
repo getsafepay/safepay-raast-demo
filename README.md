@@ -9,7 +9,7 @@ This project supports:
 -   **QR**: `DYNAMIC`, `STATIC`
 -   **PAYOUT**
 -   **Bulk Attempts** via CSV / TSV uploads
--   QR preview rendering + downloadable full-size QR (bulk)
+-   **QR preview** rendering + downloadable full-size QR (bulk)
 
 ------------------------------------------------------------------------
 
