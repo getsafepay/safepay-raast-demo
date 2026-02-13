@@ -141,6 +141,23 @@ POST /api/payout
 
 ------------------------------------------------------------------------
 
+## Screenshots
+
+
+### RTP
+![RTP](docs/screenshots/rtp.png)
+
+### QR
+![QR](docs/screenshots/qr.png)
+
+### Payouts
+![QR](docs/screenshots/payout.png)
+
+### Bulk Attempts
+![Bulk](docs/screenshots/bulk.png)
+
+------------------------------------------------------------------------
+
 # UI Overview
 
 ## RTP Tab
