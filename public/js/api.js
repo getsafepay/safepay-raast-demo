@@ -1,8 +1,8 @@
 export async function callRtp(payload) {
-     return fetch("/api/rtp", {
+  return fetch("/api/rtp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 }
 
@@ -10,7 +10,15 @@ export async function callQr(payload) {
   return fetch("/api/qr", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function callPayout(payload) {
+  return fetch("/api/payout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
 }
 
